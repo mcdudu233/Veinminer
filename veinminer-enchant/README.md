@@ -35,6 +35,6 @@ Changes apply after a server restart or world rejoin.<br>
 
 Veinminers `minEnchantLevel` setting (also as group/client override) defines the min enchantment level required to veinmine, e.g. ores only at level 2+.
 
-The enchantment name is defined by a translatable key `enchantment.veinminer-enchantment.veinminer` and defaults to `Veinmine`.
+The Paper build displays **连锁挖矿** on vanilla clients. For the mod loaders, the translation key is `enchantment.veinminer_enchantment.veinminer`, with the fallback `Veinmine`.
 
 Platform Notice: No reuploads or forks are allowed on Modrinth & CurseForge

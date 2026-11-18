@@ -30,7 +30,7 @@ object PaperVeinminerCommand {
             @Suppress("UNCHECKED_CAST")
             event.registrar().register(
                 node as LiteralCommandNode<PaperCommandSourceStack>,
-                "Veinminer command",
+                "查看和管理连锁挖矿",
             )
         }
     }

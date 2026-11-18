@@ -47,9 +47,11 @@ object EnchantmentPack {
 
     /**
      * Writes the datapack into [configDir]/[PACK_DIR] and returns its root.
+     * A supplied [displayName] is sent as literal text to clients.
      */
     @JvmStatic
-    fun generate(configDir: Path): Path {
+    @JvmOverloads
+    fun generate(configDir: Path, displayName: String? = null): Path {
         val settings = loadSettings(configDir)
         val settingsFile = configDir.resolve(SETTINGS_FILE)
         if (!settingsFile.exists()) settingsFile.createParentDirectories().writeText(json.encodeToString(settings))
@@ -66,8 +68,12 @@ object EnchantmentPack {
 
         root.write("data/veinminer_enchantment/enchantment/veinminer.json", buildJsonObject {
             putJsonObject("description") {
-                put("translate", "enchantment.veinminer_enchantment.veinminer")
-                put("fallback", "Veinmine")
+                if (displayName == null) {
+                    put("translate", "enchantment.veinminer_enchantment.veinminer")
+                    put("fallback", "Veinmine")
+                } else {
+                    put("text", displayName)
+                }
             }
             put("supported_items", settings.supportedItems)
             put("weight", settings.weight.coerceIn(1, 1024))

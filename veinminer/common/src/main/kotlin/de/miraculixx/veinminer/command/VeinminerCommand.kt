@@ -43,22 +43,21 @@ object VeinminerCommand {
             executesAsync {
                 val host = ActiveHost.host
                 source.sendSystemMessage(
-                    header("Veinminer") + cmp("\nVersion: ") + value(host.versionVeinminer) +
+                    header("连锁挖矿") + cmp("\n版本 ") + value(host.versionVeinminer) +
                         cmp(" (") + value(host.platform) + cmp(" - ") + value(host.versionMinecraft) + cmp(")") +
-                        cmp("\nDownload: ") + link("Modrinth", "https://modrinth.com/project/veinminer") +
+                        cmp("\n下载地址 ") + link("Modrinth", "https://modrinth.com/project/veinminer") +
                         cmp(" | ") + link("CurseForge", "https://www.curseforge.com/minecraft/mc-mods/veinminer-mod") +
-                        cmp("\nVisit the wiki for more information").link("https://modrinth.com/project/veinminer#config")
+                        cmp("\n点击查看设置指南").link("https://modrinth.com/project/veinminer#config")
                 )
             }
 
             literal("help") {
                 executesAsync {
                     source.sendSystemMessage(
-                        cmp("\nVeinminer comes preconfigured for Ores. " +
-                                "If you like to veinmine more blocks, learn about settings and more, ") +
-                                link("see here", "https://modrinth.com/project/veinminer#config") +
-                        cmp(" (scroll down to 'Mod/Plugin Version' if it doesnt do automatically)") +
-                        cmp("\n- Click on categories to open them")
+                        header("连锁挖矿帮助") +
+                            cmp("\n插件已预设矿石规则。想连着挖更多种方块，可以") +
+                            link("查看设置指南", "https://modrinth.com/project/veinminer#config") +
+                            cmp("，找到「Mod/Plugin Version」一节，再点击对应小节展开说明。")
                     )
                 }
             }
@@ -67,7 +66,7 @@ object VeinminerCommand {
                 requiresPermission(permissionReload)
                 executesAsync {
                     ActiveConfig.bridge.reload(true)
-                    source.sendSystemMessage(success("Veinminer config reloaded"))
+                    source.sendSystemMessage(success("连锁挖矿配置已重新加载。"))
                 }
             }
 
@@ -78,12 +77,12 @@ object VeinminerCommand {
                 literal("add") {
                     argument("block", BlockPredicateArgument.blockPredicate(ctx)) {
                         executesAsync {
-                            val id = getRaw(3) ?: return@executesAsync source.sendSystemMessage(error("Block can not be null"))
+                            val id = getRaw(3) ?: return@executesAsync source.sendSystemMessage(error("请指定一个方块或方块标签。"))
                             if (ActiveConfig.bridge.veinBlocksRaw.add(id)) {
                                 ActiveConfig.bridge.save()
-                                source.sendSystemMessage(success("Added ") + value(id) + success(" to veinminer blocks"))
+                                source.sendSystemMessage(success("已将 ") + value(id) + success(" 加入连锁挖矿方块列表。"))
                             } else {
-                                source.sendSystemMessage(value(id) + error(" is already a veinminer block"))
+                                source.sendSystemMessage(value(id) + error(" 已在连锁挖矿方块列表中。"))
                             }
                         }
                     }
@@ -93,12 +92,12 @@ object VeinminerCommand {
                     argument("block", BlockPredicateArgument.blockPredicate(ctx)) {
                         suggestStrings { c -> c.suggestFilteredList(ActiveConfig.bridge.veinBlocksRaw) }
                         executesAsync {
-                            val id = getRaw(3) ?: return@executesAsync source.sendSystemMessage(error("Block can not be null"))
+                            val id = getRaw(3) ?: return@executesAsync source.sendSystemMessage(error("请指定一个方块或方块标签。"))
                             if (ActiveConfig.bridge.veinBlocksRaw.remove(id)) {
                                 ActiveConfig.bridge.save()
-                                source.sendSystemMessage(success("Removed ") + value(id) + success(" from veinminer blocks"))
+                                source.sendSystemMessage(success("已从连锁挖矿方块列表移除 ") + value(id))
                             } else {
-                                source.sendSystemMessage(value(id) + error(" is not a veinminer block"))
+                                source.sendSystemMessage(value(id) + error(" 不在连锁挖矿方块列表中。"))
                             }
                         }
                     }
@@ -108,8 +107,8 @@ object VeinminerCommand {
             literal("toggle") {
                 requiresPermission(permissionToggle)
                 executesAsync {
-                    if (ActiveHost.host.active) source.sendSystemMessage(error("Veinminer functions disabled"))
-                    else source.sendSystemMessage(success("Veinminer functions enabled"))
+                    if (ActiveHost.host.active) source.sendSystemMessage(error("连锁挖矿已关闭。"))
+                    else source.sendSystemMessage(success("连锁挖矿已开启。"))
                     ActiveHost.host.active = !ActiveHost.host.active
                 }
             }
@@ -147,15 +146,15 @@ object VeinminerCommand {
             literal("enchant") {
                 executesAsync {
                     if (!ActiveHost.host.enchantmentActive) return@executesAsync source.sendSystemMessage(
-                        header("Enchantment") +
-                            cmp("\nThe Veinminer Enchantment addon is not installed. Download: ", cBase) +
+                        header("连锁挖矿附魔") +
+                            cmp("\n要使用这项附魔，请先安装附魔插件。下载地址 ", cBase) +
                             link("Modrinth", "https://modrinth.com/mod/veinminer-enchantment") +
                             cmp(" | ") + link("CurseForge", "https://www.curseforge.com/minecraft/mc-mods/veinminer-enchant")
                     )
                     source.sendSystemMessage(
-                        header("Enchantment") +
-                            cmp("\nModify the Veinmine enchantment with ", cBase) + command("/veinminer enchant <setting> [<new-value>]") +
-                            cmp("\nChanges apply after a server restart or world rejoin (click here for help)", cBase)
+                        header("连锁挖矿附魔") +
+                            cmp("\n有管理权限时，可以用这条命令修改附魔设置。\n", cBase) + command("/veinminer enchant <setting> [<new-value>]") +
+                            cmp("\n改动会在服务器重启或重新进入单人世界后生效。点击查看设置说明。", cBase)
                                 .link("https://modrinth.com/mod/veinminer-enchantment#settings")
                     )
                 }
@@ -178,7 +177,7 @@ object VeinminerCommand {
                         argument("supportedItems-new", ItemPredicateArgument.itemPredicate(ctx)) {
                             executesAsync {
                                 val raw = getRaw(3)
-                                if (raw == null || !source.isValidItemTarget(raw)) return@executesAsync source.sendSystemMessage(error("Only plain item IDs or item tags are allowed"))
+                                if (raw == null || !source.isValidItemTarget(raw)) return@executesAsync source.sendSystemMessage(error("请输入物品 ID 或物品标签，例如 minecraft:diamond_pickaxe 或 #minecraft:pickaxes。"))
                                 enchant().supportedItems = raw
                                 ActiveConfig.bridge.save()
                                 source.sendSystemMessage(settingChanged("supportedItems", raw) + restartNote())
@@ -195,49 +194,48 @@ object VeinminerCommand {
 
                 fun CommandSourceStack.createGroup(name: String, content: MutableSet<String>) {
                     if (groupExists(name) != null) {
-                        sendSystemMessage(error("Group ") + value(name) + error(" already exists"))
+                        sendSystemMessage(error("分组 ") + value(name) + error(" 已存在。"))
                         return
                     }
                     ActiveConfig.bridge.groupsRaw.add(BlockGroup(name, content))
                     sendSystemMessage(
-                        success("Created group ") + value(name) +
-                            cmp("\nAdd blocks with ", cBase) +
+                        success("已创建分组 ") + value(name) +
+                            cmp("\n用这条命令添加方块。\n", cBase) +
                             command("/veinminer groups edit $name add-block <block>")
                     )
                     ActiveConfig.bridge.save()
                 }
 
                 fun CommandSourceStack.editContent(groupName: String, rawKey: String?, isBlock: Boolean, isAdd: Boolean) {
-                    val group = groupExists(groupName) ?: return sendSystemMessage(error("Group ") + value(groupName) + error(" does not exist"))
+                    val group = groupExists(groupName) ?: return sendSystemMessage(error("找不到分组 ") + value(groupName))
                     val set = if (isBlock) group.blocks else group.tools
-                    if (rawKey == null) return sendSystemMessage(error("Invalid material"))
-                    val label = if (isBlock) "block" else "tool"
+                    if (rawKey == null) return sendSystemMessage(error("请指定要修改的方块、工具或标签。"))
+                    val label = if (isBlock) "方块" else "工具"
                     if (isAdd) {
-                        if (set.add(rawKey)) sendSystemMessage(success("Added $label ") + value(rawKey) + success(" to group ") + value(groupName))
-                        else return sendSystemMessage(value(rawKey) + error(" is already in group ") + value(groupName))
+                        if (set.add(rawKey)) sendSystemMessage(success("已将$label ") + value(rawKey) + success(" 加入分组 ") + value(groupName))
+                        else return sendSystemMessage(value(rawKey) + error(" 已在分组 ") + value(groupName) + error(" 中。"))
                     } else {
-                        if (set.remove(rawKey)) sendSystemMessage(success("Removed $label ") + value(rawKey) + success(" from group ") + value(groupName))
-                        else return sendSystemMessage(value(rawKey) + error(" is not in group ") + value(groupName))
+                        if (set.remove(rawKey)) sendSystemMessage(success("已从分组 ") + value(groupName) + success(" 移除$label ") + value(rawKey))
+                        else return sendSystemMessage(error("分组 ") + value(groupName) + error(" 中找不到 ") + value(rawKey))
                     }
                     ActiveConfig.bridge.save()
                 }
 
                 executesAsync {
                     source.sendSystemMessage(
-                        header("Groups") +
-                            cmp("\nChain multiple block types into one veinmine target.", cBase) +
-                            cmp("\nExample: ", cBase) + value("Ores") + cmp(" with ", cBase) + value("iron_ore") +
-                            cmp(" and ", cBase) + value("deepslate_iron_ore") +
-                            cmp("\nGroups can be limited to certain tools.", cBase)
+                        header("连锁挖矿分组") +
+                            cmp("\n同一组里的不同方块可以一起连锁挖掘。", cBase) +
+                            cmp("\n例如，", cBase) + value("Ores") + cmp("（矿石）分组可以同时包含铁矿石和深层铁矿石。", cBase) +
+                            cmp("\n你也可以给每个分组指定可用的工具。", cBase)
                     )
                 }
 
                 literal("list") {
                     fun BlockGroup<String>.print(source: CommandSourceStack) {
                         source.sendSystemMessage(
-                            header("Group ") + value(name) +
-                                cmp("\nBlocks: ", cBase) + list(blocks) +
-                                cmp("\nTools: ", cBase) + list(tools, "all")
+                            header("分组 ") + value(name) +
+                                cmp("\n方块 ", cBase) + list(blocks) +
+                                cmp("\n工具 ", cBase) + list(tools, "不限")
                         )
                     }
 
@@ -245,14 +243,14 @@ object VeinminerCommand {
                         suggestStrings { ActiveConfig.bridge.groupsRaw.map { it.name } }
                         executesAsync {
                             val name = StringArgumentType.getString(this, "group")
-                            val group = groupExists(name) ?: return@executesAsync source.sendSystemMessage(error("Group ") + value(name) + error(" does not exist"))
+                            val group = groupExists(name) ?: return@executesAsync source.sendSystemMessage(error("找不到分组 ") + value(name))
                             group.print(source)
                         }
                     }
 
                     executesAsync {
                         val groups = ActiveConfig.bridge.groupsRaw
-                        if (groups.isEmpty()) source.sendSystemMessage(cmp("No groups configured"))
+                        if (groups.isEmpty()) source.sendSystemMessage(cmp("还没有设置任何分组。"))
                         else groups.forEach { group -> group.print(source) }
                     }
                 }
@@ -283,9 +281,9 @@ object VeinminerCommand {
                         suggestStrings { ActiveConfig.bridge.groupsRaw.map { it.name } }
                         executesAsync {
                             val name = StringArgumentType.getString(this, "group").lowercase()
-                            val group = groupExists(name) ?: return@executesAsync source.sendSystemMessage(error("Group ") + value(name) + error(" does not exist"))
+                            val group = groupExists(name) ?: return@executesAsync source.sendSystemMessage(error("找不到分组 ") + value(name))
                             ActiveConfig.bridge.groupsRaw.removeIf { it === group } // data class hash changes on edit, set.remove would miss it
-                            source.sendSystemMessage(success("Removed group ") + value(name))
+                            source.sendSystemMessage(success("已移除分组 ") + value(name))
                             ActiveConfig.bridge.save()
                         }
                     }
@@ -343,18 +341,18 @@ object VeinminerCommand {
 
             literal("presets") {
                 requiresPermission(permissionGroups)
-                executesAsync { source.sendSystemMessage(cmp("Quick add preconfigured groups and settings")) }
+                executesAsync { source.sendSystemMessage(cmp("用预设可以快速添加一组方块和工具。输入预设名即可添加。")) }
                 fun CommandNodeBuilder<CommandSourceStack>.addPreset(name: String, blocks: Set<String>, tools: Set<String>, override: VeinminerSettingsOverride = VeinminerSettingsOverride()) {
                     literal(name) {
                         executesAsync {
                             if (ActiveConfig.bridge.groupsRaw.any { it.name.equals(name, ignoreCase = true) }) {
-                                return@executesAsync source.sendSystemMessage(error("Group ") + value(name) + error(" already exists"))
+                                return@executesAsync source.sendSystemMessage(error("分组 ") + value(name) + error(" 已存在。"))
                             }
                             ActiveConfig.bridge.groupsRaw.add(BlockGroup(name, blocks.toMutableSet(), tools.toMutableSet(), override))
                             source.sendSystemMessage(
-                                success("Added preset group ") + value(name) +
-                                    cmp("\nBlocks: ", cBase) + list(blocks) +
-                                    cmp("\nTools: ", cBase) + list(tools, "all")
+                                success("已添加预设分组 ") + value(name) +
+                                    cmp("\n方块 ", cBase) + list(blocks) +
+                                    cmp("\n工具 ", cBase) + list(tools, "不限")
                             )
                             ActiveConfig.bridge.save()
                         }
@@ -380,8 +378,7 @@ object VeinminerCommand {
     ) {
         literal(name) {
             executesAsync {
-                val currentString = currentConsumer.invoke(this)?.toString() ?: "unset"
-                source.sendSystemMessage(setting(name, currentString))
+                source.sendSystemMessage(setting(name, currentConsumer(this)))
             }
 
             when (typeOf<T>()) {
@@ -446,10 +443,10 @@ object VeinminerCommand {
                 executesAsync {
                     val key = StringArgumentType.getString(this, "key")
                     if (resolve().unset(key)) {
-                        source.sendSystemMessage(success("Unset override ") + value(key))
+                        source.sendSystemMessage(success("已取消单独设置 ") + value(key))
                         ActiveConfig.bridge.save()
                     } else {
-                        source.sendSystemMessage(error("Override ") + value(key) + error(" is not set"))
+                        source.sendSystemMessage(value(key) + error(" 尚未单独设置。"))
                     }
                 }
             }
@@ -473,14 +470,21 @@ object VeinminerCommand {
     private fun success(text: String) = cmp(text, cGreen)
     private fun error(text: String) = cmp(text, cRed)
     private fun value(value: Any?) = cmp(value.toString(), cGreen)
-    private fun command(text: String) = cmp(text, cGreen).suggest(text).hover(cmp("Click to suggest command", cWhite))
-            fun link(name: String, url: String) = cmp(name, cHighlight, true).link(url).hover(cmp("Click to open URL", cWhite))
-    private fun usage(syntax: String) = error("Correct Syntax: ") + command(syntax).withColor(cBase)
-    private fun setting(name: String, current: String) = cmp(name) + cmp(" is currently set to ", cBase) + value(current)
-    private fun settingChanged(name: String, newValue: Any?) = success(name) + success(" set to ") + value(newValue)
-    private fun restartNote() = cmp(" (applies after restart/rejoin)", cBase)
+    private fun command(text: String) = cmp(text, cGreen).suggest(text).hover(cmp("点击填入命令", cWhite))
+    fun link(name: String, url: String) = cmp(name, cHighlight, true).link(url).hover(cmp("点击打开链接", cWhite))
+    private fun usage(syntax: String) = error("命令用法 ") + command(syntax).withColor(cBase)
+    private fun setting(name: String, current: Any?) = value(name) + cmp(" 当前为 ") + settingValue(current)
+    private fun settingChanged(name: String, newValue: Any?) = success("已将 ") + value(name) + success(" 设为 ") + settingValue(newValue)
+    private fun restartNote() = cmp("（服务器重启或重新进入单人世界后生效）", cBase)
 
-    private fun list(values: Collection<String>, empty: String = "none"): MutableComponent {
+    private fun settingValue(current: Any?) = value(when (current) {
+        true -> "开启"
+        false -> "关闭"
+        null -> "未单独设置"
+        else -> current
+    })
+
+    private fun list(values: Collection<String>, empty: String = "无"): MutableComponent {
         if (values.isEmpty()) return value(empty)
         val component = cmp("[", cBase)
         values.forEachIndexed { index, item ->

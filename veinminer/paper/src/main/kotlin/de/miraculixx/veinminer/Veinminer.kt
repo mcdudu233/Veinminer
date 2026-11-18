@@ -60,9 +60,9 @@ class Veinminer : KPaper() {
         listen<PlayerJoinEvent> {
             if (PaperConfigManager.firstInstall && it.player.isOp) {
                 it.player.sendMessage(
-                    (cmp("\nVeinminer was installed for the first time.") +
-                        cmp("\n• By default only ores are veinmine-able") +
-                        cmp("\n• Click ") + cmp("here", cHighlight.color()) + cmp(" to see how to configure more"))
+                    (cmp("\n连锁挖矿插件已安装。") +
+                        cmp("\n• 初始设置支持连锁挖掘矿石。") +
+                        cmp("\n• ") + cmp("点击查看设置指南", cHighlight.color()))
                         .addUrl("https://modrinth.com/project/veinminer#config")
                 )
             }
@@ -77,8 +77,8 @@ class Veinminer : KPaper() {
             listen<PlayerJoinEvent> {
                 if (it.player.isOp && !PaperConfigManager.settings.hideUpdates) {
                     it.player.sendMessage(
-                        cmp("${info.module.modID} is outdated! Click here to download the latest version").addUrl("https://modrinth.com/project/${info.module.modID}") +
-                        cmp(" (Current: ") + cmp(info.currentVersion, cRed.color()) + cmp(", Latest: ") + cmp(info.latestVersion, cGreen.color()) + cmp(")")
+                        cmp("${info.module.modID} 有上游新版本，点击查看。").addUrl("https://modrinth.com/project/${info.module.modID}") +
+                        cmp("（当前 ") + cmp(info.currentVersion, cRed.color()) + cmp("，上游新版 ") + cmp(info.latestVersion, cGreen.color()) + cmp("）")
                     )
                 }
             }

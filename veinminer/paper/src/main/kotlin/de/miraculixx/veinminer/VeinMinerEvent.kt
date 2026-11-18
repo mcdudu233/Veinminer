@@ -98,7 +98,7 @@ object VeinMinerEvent {
         val attribute = player.getAttribute(Attribute.BLOCK_BREAK_SPEED) ?: return@listen
         attribute.removeModifier(attributeNamespace)
         attribute.addTransientModifier(modifier)
-        if (debug) player.sendMessage(cmp("Modifier: ${"%.3f".format(speed + 1.0)}x for $amount blocks"))
+        if (debug) player.sendMessage(cmp("本次连锁挖掘 $amount 个方块，挖掘速度为原来的 ${"%.3f".format(speed + 1.0)} 倍。"))
     }
 
     @Suppress("unused")

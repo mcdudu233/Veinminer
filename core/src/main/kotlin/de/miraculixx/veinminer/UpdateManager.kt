@@ -26,7 +26,8 @@ object UpdateManager {
             return VersionInfo(false, modVersion ?: "unknown", "unknown", module)
         }
 
-        val outdated = if (latest.version_number == modVersion) {
+        // Build metadata labels local distributions of the same upstream release.
+        val outdated = if (latest.version_number.substringBefore('+') == modVersion?.substringBefore('+')) {
             logger.info("${module.modID} is up to date")
             false
         } else if (modVersion != null) {
